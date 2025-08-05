@@ -233,9 +233,10 @@ function setupUI() {
     container.innerHTML = html;
 
     document.getElementById('generate-btn').onclick = () => {
+        teamLeader = document.getElementById('team-leader-input').value.trim(); // 팀장 이름 가져오기
         headNurse = document.getElementById('head-nurse-input').value.trim();
         chiefNurse = document.getElementById('chief-nurse-input').value.trim();
-        teamLeader = document.getElementById('team-leader-input').value.trim(); // 팀장 이름 가져오기
+        
 
         nurses.length = 0;
         document.querySelectorAll('.nurse-name-input').forEach(input => {
