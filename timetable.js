@@ -228,16 +228,19 @@ function setupUI() {
         <label for="year-input">년도: </label>
         <input type="number" id="year-input" value="${year}" min="2020" max="2100" style="width:80px;">
         <button id="generate-btn">근무표 작성</button>
+        <button id="clear-btn">지우기</button>
         <div id="table-area"></div>
     `;
     container.innerHTML = html;
 
+    // 데이터 불러오기
+    loadData();
+
     document.getElementById('generate-btn').onclick = () => {
-        teamLeader = document.getElementById('team-leader-input').value.trim(); // 팀장 이름 가져오기
+        teamLeader = document.getElementById('team-leader-input').value.trim();
         headNurse = document.getElementById('head-nurse-input').value.trim();
         chiefNurse = document.getElementById('chief-nurse-input').value.trim();
         
-
         nurses.length = 0;
         document.querySelectorAll('.nurse-name-input').forEach(input => {
             const name = input.value.trim();
@@ -249,9 +252,57 @@ function setupUI() {
         const { timetable, days } = generateMonthlyTimetable(selectedYear, selectedMonth);
         renderTimetable(timetable, days, selectedYear, selectedMonth);
 
+        // 데이터 저장
+        saveData(timetable, days, selectedYear, selectedMonth);
+
         const tableHtml = document.getElementById('table-area').innerHTML;
         window.openTimetableInNewWindow(tableHtml);
     };
+
+    document.getElementById('clear-btn').onclick = () => {
+        localStorage.removeItem('timetableData');
+        location.reload();
+    };
+}
+
+function saveData(timetable, days, year, month) {
+    const data = {
+        teamLeader,
+        headNurse,
+        chiefNurse,
+        nurses,
+        timetable,
+        days,
+        year,
+        month
+    };
+    localStorage.setItem('timetableData', JSON.stringify(data));
+}
+
+function loadData() {
+    const savedData = localStorage.getItem('timetableData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        teamLeader = data.teamLeader;
+        headNurse = data.headNurse;
+        chiefNurse = data.chiefNurse;
+        nurses.length = 0;
+        data.nurses.forEach(nurse => nurses.push(nurse));
+
+        document.getElementById('team-leader-input').value = teamLeader;
+        document.getElementById('head-nurse-input').value = headNurse;
+        document.getElementById('chief-nurse-input').value = chiefNurse;
+        const nurseInputs = document.querySelectorAll('.nurse-name-input');
+        nurses.forEach((nurse, i) => {
+            if (i < nurseInputs.length) {
+                nurseInputs[i].value = nurse.name;
+            }
+        });
+
+        if (data.timetable) {
+            renderTimetable(data.timetable, data.days, data.year, data.month);
+        }
+    }
 }
 
 window.onload = setupUI;
