@@ -270,7 +270,7 @@ function saveData(timetable, days, year, month) {
         teamLeader,
         headNurse,
         chiefNurse,
-        nurses,
+        nurses: [...nurses],
         timetable,
         days,
         year,
