@@ -67,6 +67,25 @@
     </div>
     <script src="timetable.js"></script>
     <script>
+        // 새 창에 근무표를 표시하는 함수
+        window.openTimetableInNewWindow = function(tableHtml) {
+            const newWindow = window.open("", "_blank", "width=1200,height=800");
+            newWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="ko">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>근무표</title>
+                    <link rel="stylesheet" href="style.css">
+                </head>
+                <body>
+                    ${tableHtml}
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             const inputContainer = document.getElementById('input-container');
             const timetableContainer = document.getElementById('timetable-container');

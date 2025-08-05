@@ -218,9 +218,9 @@ function setupUI() {
     }
 
     let html = `
+        <label>팀장 이름: <input type="text" id="team-leader-input"></label><br> 
         <label>수간호사 이름: <input type="text" id="head-nurse-input"></label><br>
         <label>주임간호사 이름: <input type="text" id="chief-nurse-input"></label><br>
-        <label>팀장 이름: <input type="text" id="team-leader-input"></label><br> 
         <div>일반 간호사 이름 입력 (최대 17명):<br>${nurseInputs}</div>
         <label for="month-select">월 선택: </label>
         <select id="month-select">
@@ -249,7 +249,6 @@ function setupUI() {
         const { timetable, days } = generateMonthlyTimetable(selectedYear, selectedMonth);
         renderTimetable(timetable, days, selectedYear, selectedMonth);
 
-        // 근무표를 새창에 표시
         const tableHtml = document.getElementById('table-area').innerHTML;
         window.openTimetableInNewWindow(tableHtml);
     };
