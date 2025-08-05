@@ -60,14 +60,14 @@ function generateMonthlyTimetable(year, month) {
     let timetable = [];
 
     // 수간호사, 주임간호사, 팀장 아침근무만, 휴일엔 근무하지 않음
+    if (teamLeader) {
+        timetable.push({ name: teamLeader, type: "팀장", shifts: assignMorningShift(teamLeader, days, year, month) });
+    }
     if (headNurse) {
         timetable.push({ name: headNurse, type: "수간호사", shifts: assignMorningShift(headNurse, days, year, month) });
     }
     if (chiefNurse) {
         timetable.push({ name: chiefNurse, type: "주임간호사", shifts: assignMorningShift(chiefNurse, days, year, month) });
-    }
-    if (teamLeader) {
-        timetable.push({ name: teamLeader, type: "팀장", shifts: assignMorningShift(teamLeader, days, year, month) });
     }
 
     // 일반 간호사 근무표 (아침/점심/저녁 각 3명, 휴일에도 근무)
