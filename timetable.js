@@ -18,6 +18,7 @@ const nurses = [
 ];
 let headNurse = null;
 let chiefNurse = null;
+let teamLeader = null; // 팀장 추가
 
 const shifts = ["아침", "점심", "저녁", "휴무"];
 
@@ -38,7 +39,7 @@ function isValidEveningShift(nurseShifts, day) {
     return true;
 }
 
-// 수간호사, 주임간호사 아침근무만, 휴무 없음
+// 수간호사, 주임간호사, 팀장 아침근무만, 휴무 없음
 function assignMorningShift(nurseName, days, year, month) {
     let shiftsArr = [];
     for (let d = 1; d <= days; d++) {
@@ -58,12 +59,15 @@ function generateMonthlyTimetable(year, month) {
     const days = getDaysInMonth(year, month);
     let timetable = [];
 
-    // 수간호사, 주임간호사 아침근무만, 휴일엔 근무하지 않음
+    // 수간호사, 주임간호사, 팀장 아침근무만, 휴일엔 근무하지 않음
     if (headNurse) {
         timetable.push({ name: headNurse, type: "수간호사", shifts: assignMorningShift(headNurse, days, year, month) });
     }
     if (chiefNurse) {
         timetable.push({ name: chiefNurse, type: "주임간호사", shifts: assignMorningShift(chiefNurse, days, year, month) });
+    }
+    if (teamLeader) {
+        timetable.push({ name: teamLeader, type: "팀장", shifts: assignMorningShift(teamLeader, days, year, month) });
     }
 
     // 일반 간호사 근무표 (아침/점심/저녁 각 3명, 휴일에도 근무)
@@ -199,7 +203,7 @@ function renderTimetable(timetable, days, year, month) {
     });
 }
 
-// UI: 간호사 등록, 수간호사/주임간호사 입력, 월 선택
+// UI: 간호사 등록, 수간호사/주임간호사/팀장 입력, 월 선택
 function setupUI() {
     // 입력 폼을 input-container에 렌더링하도록 수정
     const container = document.getElementById('input-container');
@@ -209,14 +213,15 @@ function setupUI() {
     const month = today.getMonth() + 1;
 
     let nurseInputs = '';
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 17; i++) { // 17명으로 수정
         nurseInputs += `<input type="text" class="nurse-name-input" placeholder="간호사 이름${i + 1}"><br>`;
     }
 
     let html = `
         <label>수간호사 이름: <input type="text" id="head-nurse-input"></label><br>
         <label>주임간호사 이름: <input type="text" id="chief-nurse-input"></label><br>
-        <div>일반 간호사 이름 입력 (최대 15명):<br>${nurseInputs}</div>
+        <label>팀장 이름: <input type="text" id="team-leader-input"></label><br> 
+        <div>일반 간호사 이름 입력 (최대 17명):<br>${nurseInputs}</div>
         <label for="month-select">월 선택: </label>
         <select id="month-select">
             ${Array.from({length:12}, (_,i)=>`<option value="${i+1}" ${i+1===month?'selected':''}>${i+1}월</option>`).join('')}
@@ -231,6 +236,7 @@ function setupUI() {
     document.getElementById('generate-btn').onclick = () => {
         headNurse = document.getElementById('head-nurse-input').value.trim();
         chiefNurse = document.getElementById('chief-nurse-input').value.trim();
+        teamLeader = document.getElementById('team-leader-input').value.trim(); // 팀장 이름 가져오기
 
         nurses.length = 0;
         document.querySelectorAll('.nurse-name-input').forEach(input => {
