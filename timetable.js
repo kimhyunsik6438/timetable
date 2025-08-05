@@ -59,7 +59,6 @@ function generateMonthlyTimetable(year, month) {
     const days = getDaysInMonth(year, month);
     let timetable = [];
 
-    // 수간호사, 주임간호사, 팀장 아침근무만, 휴일엔 근무하지 않음
     if (teamLeader) {
         timetable.push({ name: teamLeader, type: "팀장", shifts: assignMorningShift(teamLeader, days, year, month) });
     }
